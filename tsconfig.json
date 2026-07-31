@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "isolatedModules": true,
+        "jsx": "react-jsx",
+        "module": "preserve",
+        "target": "ES2022",
+        "strict": true,
+        "skipLibCheck": true,
+        "allowImportingTsExtensions": true,
+        "noUncheckedIndexedAccess": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true
+    },
+    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "oxfmt-preset.d.ts"]
+}

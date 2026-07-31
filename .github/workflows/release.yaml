@@ -1,0 +1,44 @@
+name: Release
+on:
+    release:
+        types: [published]
+jobs:
+    release:
+        name: Release
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write # Required for OIDC Trusted Publishing
+            contents: read
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # 7.0.1
+
+            - name: Install pnpm
+              uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # 6.0.9
+
+            - name: Use Node.js
+              uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # 7.0.0
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'pnpm'
+
+            - name: Install dependencies
+              run: pnpm install --prefer-offline
+
+            - name: Get version
+              id: get-version
+              env:
+                  TAG_NAME: ${{ github.event.release.tag_name }}
+              # Clean off beginning "v" character as `npm version` command does not work with that
+              run: |
+                  [[ "${TAG_NAME:0:1}" == "v" ]] && version="${TAG_NAME:1}" || version="$TAG_NAME"
+                  echo "version=$version" >> "$GITHUB_OUTPUT"
+
+            - name: Version & Publish
+              env:
+                  VERSION: ${{ steps.get-version.outputs.version }}
+              run: |
+                  npm install -g npm@latest
+                  npm --version # Verify greater than v11.5.1 for trusted publishing
+
+                  npm version ${VERSION} --git-tag-version=false
+                  npm --ignore-scripts publish --provenance

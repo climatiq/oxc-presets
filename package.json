@@ -1,0 +1,70 @@
+{
+    "name": "@climatiq/oxc-presets",
+    "version": "0.0.0",
+    "description": "Oxc onfiguration (oxlint, oxfmt) for Climatiq projects",
+    "keywords": [
+        "config",
+        "javascript",
+        "oxfmt",
+        "oxlint",
+        "typescript"
+    ],
+    "homepage": "https://github.com/climatiq/oxc-presets#readme",
+    "bugs": {
+        "url": "https://github.com/climatiq/oxc-presets/issues"
+    },
+    "license": "MIT",
+    "author": "Climatiq",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/climatiq/oxc-presets.git"
+    },
+    "type": "module",
+    "main": "index.js",
+    "exports": {
+        ".": "./index.js",
+        "./oxfmt": {
+            "types": "./oxfmt-preset.d.ts",
+            "import": "./oxfmt-preset.js",
+            "default": "./oxfmt-preset.js"
+        },
+        "./oxlint": "./oxlint-config.json"
+    },
+    "scripts": {
+        "format": "oxfmt -c ./oxfmt.config.mjs",
+        "format:check": "oxfmt -c ./oxfmt.config.mjs --check",
+        "lint": "oxlint -c oxlint-config.json",
+        "lint:fix": "oxlint -c oxlint-config.json --fix --max-warnings=0",
+        "type-check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "oxfmt": "^0.61.0",
+        "oxlint": "^1.76.0",
+        "oxlint-tsgolint": "^7.0.2001",
+        "typescript": "^7.0.2"
+    },
+    "engines": {
+        "node": "^20.19.0 || >=22.12.0"
+    },
+    "packageManager": "pnpm@11.18.0+sha512.33d83c77da82f49fba836925c6f1b841181ec3132b670639bd012f7075f5c7cf634c5f870147c19aae7478fac01df09d8892e880454896edd23ee9b33757563c",
+    "peerDependencies": {
+        "eslint-plugin-clsx": ">=0.1.0 <1",
+        "oxfmt": ">=0.45.0 <1",
+        "oxlint": ">=1.73.0 <2",
+        "oxlint-tsgolint": ">=7.0.2001 <8"
+    },
+    "peerDependenciesMeta": {
+        "eslint-plugin-clsx": {
+            "optional": true
+        },
+        "oxfmt": {
+            "optional": false
+        },
+        "oxlint": {
+            "optional": true
+        },
+        "oxlint-tsgolint": {
+            "optional": true
+        }
+    }
+}
