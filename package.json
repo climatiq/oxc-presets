@@ -73,5 +73,9 @@
         "oxlint-tsgolint": {
             "optional": true
         }
+    },
+    "publishConfig": {
+        "access": "public",
+        "provenance": true
     }
 }
