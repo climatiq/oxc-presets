@@ -25,9 +25,12 @@ pnpm add -D @climatiq/oxc-presets
 
 ### Oxlint
 
-Install [Oxlint](https://npmx.dev/oxlint) & [`eslint-plugin-clsx`](https://npmx.dev/eslint-plugin-clsx)
-alongside this package (it is listed in peerDependencies)
-as well as [`oxlint-tsgolint`](https://npmx.dev/oxlint-tsgolint) for type-aware linting.
+Install [Oxlint](https://npmx.dev/oxlint) alongside this package (it is listed in
+peerDependencies), as well as [`oxlint-tsgolint`](https://npmx.dev/oxlint-tsgolint) for
+type-aware linting.
+
+The `clsx`/`cn` rules ship with this package as an Oxlint JS plugin, so there is nothing else
+to install for them — see [`lint-rules/`](./lint-rules/index.md).
 
 Create an `.oxlintrc.json` file in your project root with the following content:
 
@@ -80,9 +83,36 @@ The Oxlint config includes:
 - **Next.js** rules
 - **React** rules
 - **TypeScript** rules
-- clsx/cn rules via [`eslint-plugin-clsx`](https://npmx.dev/eslint-plugin-clsx)
+- **clsx/cn** rules, bundled as an Oxlint JS plugin — see [`lint-rules/`](./lint-rules/index.md)
 - **Unused imports** detection and auto-removal
 - Sensible defaults for TypeScript projects
+
+#### clsx/cn rules
+
+The `clsx/*` rules are copied from
+[`eslint-plugin-clsx`](https://github.com/temoncher/eslint-plugin-clsx) (MIT) and converted to
+Oxlint's JS plugin API, so consumers do not need `eslint-plugin-clsx` installed. Which modules
+count as `clsx` is configured through `settings.clsxOptions`; this preset ships with:
+
+```jsonc
+{
+    "settings": {
+        "clsxOptions": {
+            "clsx": ["default", "clsx"],
+            "classnames": ["default"],
+            "@/src/lib/utils": ["cn"],
+        },
+    },
+}
+```
+
+Oxlint does not currently inherit `settings` through `extends`, so the same map is also the
+plugin's built-in default: `clsx`, `classnames` and `cn` are covered out of the box, with no
+configuration on your side. Add your own `settings.clsxOptions` block only if your `cn` helper
+lives somewhere else — note that it **replaces** the default rather than extending it, so
+re-list `clsx` and `classnames` if you still want them covered.
+
+Full rule documentation is in [`lint-rules/index.md`](./lint-rules/index.md).
 
 ### Oxfmt
 

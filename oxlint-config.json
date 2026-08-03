@@ -1,7 +1,7 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
     "plugins": ["nextjs", "typescript", "unicorn", "react", "import"],
-    "jsPlugins": ["eslint-plugin-clsx"],
+    "jsPlugins": ["./lint-rules/clsx-plugin.js"],
     "categories": {
         "correctness": "error"
     },
