@@ -3,7 +3,8 @@
 .npmignore
 .nvmrc
 pnpm-lock.yaml
-README.md
+*.md
+oxfmt.config.mjs
 tsconfig.json
 vitest.config.js
 lint-rules/*.test.js
