@@ -138,7 +138,7 @@
         "typescript/unbound-method": "error",
         "import/no-named-as-default": "error",
         "import/no-relative-parent-imports": "error",
-        "eslint/eqeqeq":  "error",
+        "eslint/eqeqeq": "error",
         "eslint/no-nested-ternary": "error"
     },
     "overrides": [
@@ -305,6 +305,5 @@
                 "import/no-default-export": "off"
             }
         }
-
     ]
 }
