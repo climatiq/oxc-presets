@@ -136,7 +136,10 @@
         "typescript/restrict-plus-operands": "error",
         "typescript/restrict-template-expressions": "error",
         "typescript/unbound-method": "error",
-        "import/no-named-as-default": "error"
+        "import/no-named-as-default": "error",
+        "import/no-relative-parent-imports": "error",
+        "eslint/eqeqeq":  "error",
+        "eslint/no-nested-ternary": "error"
     },
     "overrides": [
         {
@@ -289,6 +292,19 @@
                 "typescript/unbound-method": "off",
                 "typescript/use-unknown-in-catch-callback-variable": "off"
             }
+        },
+        {
+            "files": ["pages/**/*.{ts,tsx,js,jsx}"],
+            "rules": {
+                "import/no-default-export": "off"
+            }
+        },
+        {
+            "files": ["next.config.ts", "middleware.ts"],
+            "rules": {
+                "import/no-default-export": "off"
+            }
         }
+
     ]
 }
