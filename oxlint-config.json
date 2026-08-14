@@ -139,7 +139,8 @@
         "import/no-named-as-default": "error",
         "import/no-relative-parent-imports": "error",
         "eslint/eqeqeq": "error",
-        "eslint/no-nested-ternary": "error"
+        "eslint/no-nested-ternary": "error",
+        "react/function-component-definition": "error"
     },
     "overrides": [
         {
@@ -291,6 +292,12 @@
                 "typescript/switch-exhaustiveness-check": "off",
                 "typescript/unbound-method": "off",
                 "typescript/use-unknown-in-catch-callback-variable": "off"
+            }
+        },
+        {
+            "files": ["pages/**/*.{tsx}"],
+            "rules": {
+                "react/function-component-definition ": "off"
             }
         }
     ]
