@@ -292,18 +292,6 @@
                 "typescript/unbound-method": "off",
                 "typescript/use-unknown-in-catch-callback-variable": "off"
             }
-        },
-        {
-            "files": ["pages/**/*.{ts,tsx,js,jsx}"],
-            "rules": {
-                "import/no-default-export": "off"
-            }
-        },
-        {
-            "files": ["next.config.ts", "middleware.ts"],
-            "rules": {
-                "import/no-default-export": "off"
-            }
         }
     ]
 }
