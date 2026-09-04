@@ -9,3 +9,4 @@ tsconfig.json
 vitest.config.js
 lint-rules/*.test.js
 lint-rules/oxlint-test-utils.js
+bin/*.test.js

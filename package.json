@@ -21,6 +21,9 @@
     },
     "type": "module",
     "main": "index.js",
+    "bin": {
+        "oxc-lint-changed": "./bin/oxc-lint-changed.mjs"
+    },
     "exports": {
         ".": "./index.js",
         "./oxfmt": {
@@ -29,6 +32,7 @@
             "default": "./oxfmt-preset.js"
         },
         "./oxlint": "./oxlint-config.json",
+        "./oxlint-changed": "./oxlint-config-changed.json",
         "./clsx-plugin": {
             "types": "./lint-rules/clsx-plugin.d.ts",
             "import": "./lint-rules/clsx-plugin.js",
@@ -41,7 +45,8 @@
         "lint": "oxlint -c oxlint-config.json",
         "lint:fix": "oxlint -c oxlint-config.json --fix --max-warnings=0",
         "test": "vitest run",
-        "type-check": "tsc --noEmit"
+        "type-check": "tsc --noEmit",
+        "lint:check:changed": "node ./bin/oxc-lint-changed.mjs --config oxlint-config-changed.json"
     },
     "dependencies": {
         "@oxlint/plugins": "^1.76.0"

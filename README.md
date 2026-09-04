@@ -53,6 +53,124 @@ If you want to opt-out of type-aware linting, don't install `oxlint-tsgolint` an
 }
 ```
 
+#### Changed-files-only rules
+
+Some rules have a blast radius far too large to enable across an existing codebase, but are still
+worth enforcing on new and modified code. Those rules live in a **separate** config,
+`oxlint-config-changed.json`, which is _not_ part of the base preset — extending
+`./oxlint-config.json` will never apply them to your whole repo.
+
+Currently in this config:
+
+- [`typescript/explicit-function-return-type`](https://oxc.rs/docs/guide/usage/linter/rules/typescript/explicit-function-return-type)
+- [`import/no-default-export`](https://oxc.rs/docs/guide/usage/linter/rules/import/no-default-export)
+
+Both are set to **`warn`**, so existing violations show up as warnings in your editor rather than
+errors. The `oxc-lint-changed` command passes `--deny-warnings`, so they still fail CI on changed
+files.
+
+The changed-files config `extends` the base config, so it is a superset: everything the base config
+enforces still applies, plus the two rules above.
+
+##### Setup
+
+Add a second config file, `.oxlintrc.changed.json`, next to your normal `.oxlintrc.json`:
+
+```jsonc
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "extends": [
+        "./node_modules/@climatiq/oxc-presets/oxlint-config-changed.json",
+        "./.oxlintrc.json",
+    ],
+}
+```
+
+**List your own `.oxlintrc.json` as well**, as above. `extends` accepts several configs and later
+entries win, so this keeps any rules you have turned off locally — omit it and you will get
+failures for rules your repo has deliberately disabled.
+
+Then add the script:
+
+```jsonc
+{
+    "scripts": {
+        "lint:check:changed": "oxc-lint-changed",
+    },
+}
+```
+
+`oxc-lint-changed` ships with this package. It diffs against your base branch and lints only the
+files that changed, and it handles the things that are easy to get wrong by hand:
+
+- **An empty diff lints nothing.** Piping an empty file list into `xargs oxlint` makes GNU xargs
+  (i.e. Linux CI) run oxlint with no arguments, which lints the **entire repo** with the strict
+  rules — while macOS's BSD xargs skips it, so the bug only appears in CI.
+- **Deleted files are excluded** (`--diff-filter=ACMR`); oxlint treats a missing path as an error.
+- **Shallow clones fail loudly.** `origin/main...HEAD` cannot resolve at `fetch-depth: 1`, which
+  would otherwise silently lint nothing and pass.
+- Only lintable extensions are passed, and paths with spaces are handled.
+
+Options: `--base <ref>` to override the base branch (default: `origin/HEAD`, falling back to
+`origin/main`), and `--config <path>` to point at a different config.
+
+In CI, give the checkout enough history for the diff to resolve:
+
+```yaml
+- uses: actions/checkout@v4
+  with:
+      fetch-depth: 0
+```
+
+##### Exemptions
+
+`import/no-default-export` is turned off only for files a framework _requires_ to default-export.
+That list was derived by running the rule across real Climatiq repos and classifying every hit,
+not from the Next.js docs:
+
+- Next.js App Router convention files — `page`, `layout`, `template`, `default`, `error`,
+  `global-error`, `loading`, `not-found`, plus metadata files (`icon`, `opengraph-image`,
+  `sitemap`, `robots`, `manifest`, …). Matched by **filename**, so ordinary components and helpers
+  that merely live under `app/` are still linted.
+- `pages/**` and `src/pages/**` — the Pages Router, including `pages/api/**` handlers.
+- `proxy` / `middleware` at the repo root or under `src/`. Both spellings are needed: Next 16
+  accepts a named `proxy` export or a default one, and real repos use each.
+- `*.config.*`, `*.d.ts`, and `__mocks__/**`.
+
+Deliberately **not** exempted, having been checked against real code:
+
+- `app/**/route.ts` — route handlers export named HTTP methods (`GET`, `POST`), never a default.
+- `instrumentation.ts` / `instrumentation-client.ts` — named `register` / `onRequestError`.
+
+Note that `pages/**` is anchored rather than `**/pages/**`: an unanchored glob also matches
+Playwright page-object directories such as `src/__tests__/e2e/pages/`, silently exempting a whole
+test tree. Override globs resolve relative to the root config that extends this one, so anchoring
+works from the consuming repo's root.
+
+`typescript/explicit-function-return-type` is TypeScript-only, allows expressions, typed function
+expressions and higher-order functions, and is off for `**/components/ui/**` (shadcn-generated
+components you cannot usefully annotate).
+
+##### Editor integration
+
+The oxlint language server reads a single config, so point it at `.oxlintrc.changed.json` to see
+these rules while you type. Opening an untouched legacy file will show its existing violations as
+warnings.
+
+- **Zed** — in `.zed/settings.json`, set
+  `lsp.oxlint.initialization_options.settings.configPath` to `.oxlintrc.changed.json`.
+- **WebStorm / IntelliJ** — with the Oxc plugin, **Settings → Tools → Oxlint → "Path to Oxlint
+  Config:"**, with the configuration mode set to manual. This is stored in `.idea/OxcSettings.xml`,
+  which is usually gitignored, so each developer sets it once.
+
+##### Why not `--suppress-all`?
+
+Oxlint 1.80.0 ships bulk suppressions (`--suppress-all` writing `oxlint-suppressions.json`), which
+would be a better fit than diffing — it works with a plain full-repo `oxlint` run and needs no git
+plumbing. It is not used here because the **language server ignores the suppressions file**: a
+suppressed violation is still reported as an error, so every existing violation would light up red
+in the editor. Worth revisiting when the LSP honours it.
+
 ### Oxfmt
 
 Install [Oxfmt](https://npmx.dev/oxfmt) alongside this package (it is listed in peerDependencies).

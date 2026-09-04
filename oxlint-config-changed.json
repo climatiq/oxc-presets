@@ -1,0 +1,49 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "extends": ["./oxlint-config.json"],
+    "plugins": ["nextjs", "typescript", "unicorn", "react", "import"],
+    "rules": {
+        "typescript/explicit-function-return-type": [
+            "warn",
+            {
+                "allowExpressions": true,
+                "allowTypedFunctionExpressions": true,
+                "allowHigherOrderFunctions": true,
+                "allowDirectConstAssertionInArrowFunctions": true
+            }
+        ],
+        "import/no-default-export": "warn"
+    },
+    "overrides": [
+        {
+            "files": [
+                "**/app/**/{page,layout,template,default,error,global-error,loading,not-found}.{js,jsx,ts,tsx}",
+                "**/app/**/{icon,apple-icon,opengraph-image,twitter-image,sitemap,robots,manifest}.{js,jsx,ts,tsx}",
+                "pages/**/*.{js,jsx,ts,tsx}",
+                "src/pages/**/*.{js,jsx,ts,tsx}",
+                "proxy.{js,ts}",
+                "src/proxy.{js,ts}",
+                "middleware.{js,ts}",
+                "src/middleware.{js,ts}",
+                "**/*.config.{js,cjs,mjs,ts,cts,mts}",
+                "**/*.d.ts",
+                "**/__mocks__/**"
+            ],
+            "rules": {
+                "import/no-default-export": "off"
+            }
+        },
+        {
+            "files": ["**/*.js", "**/*.jsx", "**/*.mjs", "**/*.cjs"],
+            "rules": {
+                "typescript/explicit-function-return-type": "off"
+            }
+        },
+        {
+            "files": ["**/components/ui/**"],
+            "rules": {
+                "typescript/explicit-function-return-type": "off"
+            }
+        }
+    ]
+}
