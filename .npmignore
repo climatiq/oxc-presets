@@ -3,6 +3,7 @@
 .npmignore
 .nvmrc
 pnpm-lock.yaml
+pnpm-workspace.yaml
 *.md
 oxfmt.config.mjs
 tsconfig.json
